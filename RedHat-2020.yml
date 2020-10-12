@@ -1,0 +1,28 @@
+- name: install httpd
+  yum:
+    name: httpd
+    state: latest
+- name: start httpd
+  service:
+    name: httpd
+    state: started
+- name: enable httpd
+  systemd:
+    name: httpd
+    enabled: yes    
+- name: install unzip 
+  yum: 
+    name: unzip
+    state: latest
+- name: download templates
+  get_url:
+    url: https://www.free-css.com/assets/files/free-css-templates/download/page259/fluffster.zip
+    dest: /var/www/html
+- name: Extract fluffster.zip
+  unarchive:
+    src: /var/www/html/fluffster.zip
+    dest: /var/www/html/
+    remote_src: yes
+- name: move files
+  shell: rsync -r /var/www/html/fluffster/* /var/www/html/
+  notify: restart httpd 

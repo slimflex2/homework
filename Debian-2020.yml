@@ -1,0 +1,30 @@
+
+- name: apt-get apache
+  apt:
+    name: apache2
+    state: latest 
+    update_cache: yes 
+- name: make sure apache2 is runnning
+  service:
+   name: apache2
+   state: started
+- name: enable apache2
+  service:
+    name: apache2
+    enabled: yes  
+- name: install unzip 
+  apt: 
+    name: unzip
+    state: latest
+- name: download templates
+  get_url:
+    url: https://www.free-css.com/assets/files/free-css-templates/download/page259/health.zip
+    dest: /var/www/html
+- name: Extract health.zip
+  unarchive:
+    src: /var/www/html/health.zip
+    dest: /var/www/html/
+    remote_src: yes
+- name: move files
+  shell: rsync -r /var/www/html/health/*  /var/www/html/
+  notify:  restart apache2
